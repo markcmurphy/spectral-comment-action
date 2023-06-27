@@ -17,6 +17,6 @@ jobs:
     - run: npm ci
     - uses: ./
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.COMMENTS_TOKEN }}
         file-glob: sample/*.yml
 
