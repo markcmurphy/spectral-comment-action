@@ -15,8 +15,8 @@ jobs:
       with:
         node-version: '12.x'
     - run: npm ci
-    - uses: ./
+    - uses: l-lin/spectral-comment-action@0.1.0
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        spectral-ruleset: '.spectral.yaml'
         file-glob: sample/*.yml
-

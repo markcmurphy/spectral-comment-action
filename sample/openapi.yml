@@ -6,6 +6,8 @@ info:
     email: spectral-comment-action@noreply.com
     url: https://github.com/spectral-comment-action/issues/new
   version: 0.0.1
+servers:
+  - url: http://localhost:3000
 tags:
 - name: greetings
   description: Server greets client
@@ -39,4 +41,3 @@ components:
     Greeting:
       value:
         message: "Hello, world"
-

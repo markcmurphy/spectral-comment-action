@@ -1,0 +1,609 @@
+openapi: 3.0.0
+info:
+  title: cx-notifications-service-v1
+  version: '1.0'
+  description: Notifications Service API Spec
+  contact:
+    name: Platform Team
+tags:
+  - name: email
+  - name: sms
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /email:
+    post:
+      operationId: create_email
+      description: Create a new draft email
+      summary: Create a new draft email
+      responses:
+        '200':
+          $ref: '#/components/responses/EmailResponse'
+      tags:
+        - email
+    parameters: []
+  '/email/{eid}':
+    get:
+      operationId: get_email
+      description: |-
+        Retrieve an Email by id.
+        Possible error outcomes:
+        * NOT_103
+      summary: Retrieve an Email by id
+      parameters:
+        - name: eid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/EmailResponse'
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - email
+    put:
+      operationId: update_email
+      description: |-
+        Update the content of an unsent email.
+        Possible error outcomes:
+        * NOT_102
+        * NOT_103
+        * NOT_104
+        * NOT_109
+        * NOT_110
+      summary: Update the content of an unsent email
+      parameters:
+        - name: eid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/EmailResponse'
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - email
+      requestBody:
+        $ref: '#/components/requestBodies/EmailUpdate'
+    post:
+      operationId: send_email
+      description: |-
+        Send an email.
+        Possible error outcomes:
+        * NOT_101
+        * NOT_103
+        * NOT_109
+      summary: Send an email
+      parameters:
+        - name: eid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - email
+    delete:
+      operationId: cancel_email
+      description: |-
+        Cancel an unsent email.
+        Possible error outcomes:
+        * NOT_102
+        * NOT_103
+      summary: Cancel an unsent email
+      parameters:
+        - name: eid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - email
+    parameters:
+      - $ref: '#/components/parameters/emailEid'
+  '/email/{eid}/attachment':
+    post:
+      operationId: addAttachment
+      description: |-
+        Add an attachment to an email.
+        Possible error outcomes:
+        * NOT_102
+        * NOT_103
+        * NOT_105
+        * NOT_106
+      summary: Add an attachment to an email
+      parameters:
+        - name: eid
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/emailContentId'
+        - $ref: '#/components/parameters/emailAttachmentType'
+      responses:
+        '200':
+          $ref: '#/components/responses/EmailResponse'
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - email
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmailAttachmentUploadModel-v1'
+    delete:
+      operationId: delete_all_email_attachments
+      description: |-
+        Deletes all attachments from an email.
+        Possible error outcomes:
+        * NOT_102
+        * NOT_103
+        * NOT_107
+      summary: Deletes all attachments from an email
+      parameters:
+        - name: eid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - email
+    parameters:
+      - schema:
+          type: string
+        name: eid
+        in: path
+        required: true
+  '/email/{eid}/attachment/{aid}':
+    delete:
+      operationId: delete_email_attachment
+      description: |-
+        Delete an attachment from an email.
+        Possible error outcomes:
+        * NOT_102
+        * NOT_103
+        * NOT_107
+        * NOT_108
+      summary: Delete an attachment from an email
+      parameters:
+        - name: eid
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: aid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - email
+    parameters:
+      - $ref: '#/components/parameters/emailEid'
+      - $ref: '#/components/parameters/emailAid'
+  /sms:
+    post:
+      operationId: create_sms
+      description: Create a new draft of a SMS
+      summary: Create a new draft of a SMS
+      responses:
+        '200':
+          $ref: '#/components/responses/SmsResponse'
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - sms
+    parameters: []
+  '/sms/{sid}':
+    get:
+      operationId: get_sms
+      description: |-
+        Retrieve an SMS by id.
+        Possible error outcomes:
+        * NOT_203
+      summary: Retrieve an sms by id
+      parameters:
+        - name: sid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SmsResponse'
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - sms
+    put:
+      operationId: update_sms
+      description: |-
+        Update the content of an unsent SMS.
+        Possible error outcomes:
+        * NOT_202
+        * NOT_203
+        * NOT_204
+        * NOT_205
+      summary: Update the content of an unsent SMS
+      parameters:
+        - name: sid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/SmsResponse'
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - sms
+      requestBody:
+        $ref: '#/components/requestBodies/SmsUpdate'
+    post:
+      operationId: send_sms
+      description: |-
+        Send an SMS.
+        Possible error outcomes:
+        * NOT_201
+        * NOT_203
+        * NOT_204
+      summary: Send an sms
+      parameters:
+        - name: sid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - sms
+    delete:
+      operationId: cancel_sms
+      description: |-
+        Cancel an unsent SMS.
+        Possible error outcomes:
+        * NOT_102
+        * NOT_103
+      summary: Cancel an unsent sms
+      parameters:
+        - name: sid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: '#/components/responses/400'
+      tags:
+        - sms
+    parameters:
+      - $ref: '#/components/parameters/smsEid'
+components:
+  requestBodies:
+    EmailUpdate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EmailRequestModel-v1'
+    SmsUpdate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SmsRequestModel-v1'
+  responses:
+    '400':
+      description: |-
+        Bad request error
+
+        - NOT_101 - Email Not Ready
+        - NOT_102 - Illegal Email Modification
+        - NOT_103 - Invalid Email Identifier
+        - NOT_104 - Duplicate Email Addresses
+        - NOT_105 - Duplicate Email Attachment Content Id
+        - NOT_106 - Attachment with Empty Content Id
+        - NOT_107 - No Email Attachments
+        - NOT_108 - Invalid Email Attachment Identifier
+        - NOT_109 - Unable to find configuration for email
+        - NOT_110 - Email Identifier Mismatch
+
+        - NOT_201 - Sms Not Ready
+        - NOT_202 - Illegal Sms Modification
+        - NOT_203 - Invalid Sms Identifier
+        - NOT_204 - Unable to find configuration for sms
+        - NOT_205 - Sms Identifier Mismatch
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WithErrorCode-v1'
+    EmailResponse:
+      description: Email Operation Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EmailResponseModel-v1'
+    SmsResponse:
+      description: SMS Operation Response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SmsResponseModel-v1'
+  parameters:
+    emailContentId:
+      name: contentId
+      in: query
+      schema:
+        type: string
+      description: Id to be used inside the email template for INLINE attachments
+    emailAttachmentType:
+      name: attachmentType
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - INLINE
+          - ATTACHMENT
+      description: Type of attachment
+    emailEid:
+      name: eid
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The identifier of the email
+    emailAid:
+      name: aid
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The email attachment id
+    smsEid:
+      name: sid
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The identifier of the SMS
+  schemas:
+    WithErrorCode-v1:
+      title: Errors With Error Code
+      type: object
+      properties:
+        title:
+          type: string
+          description: 'A short summary of the problem type. Written in English and readable for engineers, usually not suited for non technical stakeholders and not localized.'
+          example: Bad Request
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code generated by the origin server for this occurrence of the problem.
+          minimum: 100
+          example: 400
+        detail:
+          type: string
+          description: 'A human readable explanation specific to this occurrence of the problem that is helpful to locate the problem and give advice on how to proceed. Written in English and readable for engineers, usually not suited for non technical stakeholders and not localized.'
+          example: 'Customer: ''620069'' not found'
+        errorCode:
+          type: string
+          description: The error code of this problem
+          example: CSP-001
+        errorMessage:
+          type: string
+          description: Brief message about the error. It is usually key message beside errorCode for client to identify the problem.
+        errorMetadata:
+          type: object
+          description: Specific metadata for the error code
+      required:
+        - title
+        - status
+        - detail
+        - errorCode
+    EmailAttachmentModel-v1:
+      title: EmailAttachmentModel
+      x-stoplight:
+        id: 7648a14ee6117
+      type: object
+      properties:
+        aid:
+          type: string
+        type:
+          type: string
+        disposition:
+          type: string
+        filename:
+          type: string
+        data:
+          type: string
+    EmailAttachmentUploadModel-v1:
+      title: emailAttachmentUploadModel-v1
+      x-stoplight:
+        id: 5nm6hotpr8m5j
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+    EmailRequestModel-v1:
+      title: EmailRequestModel
+      x-stoplight:
+        id: e7b18a604123d
+      type: object
+      properties:
+        eid:
+          type: string
+        from:
+          $ref: '#/components/schemas/SenderRequestModel-v1'
+        to:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipientRequestModel-v1'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipientRequestModel-v1'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipientRequestModel-v1'
+        subject:
+          type: string
+        body:
+          type: string
+    EmailResponseModel-v1:
+      title: EmailResponseModel
+      x-stoplight:
+        id: 5cc6f90abd2f1
+      type: object
+      properties:
+        eid:
+          type: string
+        from:
+          $ref: '#/components/schemas/SenderResponseModel-v1'
+        to:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipientResponseModel-v1'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipientResponseModel-v1'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipientResponseModel-v1'
+        subject:
+          type: string
+        body:
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAttachmentModel-v1'
+        status:
+          type: string
+          enum:
+            - CANCELED
+            - CREATED
+            - ERROR
+            - READY
+            - SCHEDULED
+            - SENT
+        sentAt:
+          type: string
+          format: date-time
+    RecipientRequestModel-v1:
+      title: RecipientRequestModel
+      x-stoplight:
+        id: 6a9dc54937ec4
+      type: object
+      properties:
+        emailAddress:
+          type: string
+        name:
+          type: string
+    RecipientResponseModel-v1:
+      title: RecipientResponseModel
+      x-stoplight:
+        id: 1fc273915f126
+      type: object
+      properties:
+        emailAddress:
+          type: string
+        name:
+          type: string
+    SenderRequestModel-v1:
+      title: SenderRequestModel
+      x-stoplight:
+        id: ec775a7a680b8
+      type: object
+      properties:
+        salesOrg:
+          type: string
+        applicationName:
+          type: string
+        subCode:
+          type: string
+    SenderResponseModel-v1:
+      title: SenderResponseModel
+      x-stoplight:
+        id: 6150ecdc52cf5
+      type: object
+      properties:
+        salesOrg:
+          type: string
+        applicationName:
+          type: string
+        subCode:
+          type: string
+    SmsRequestModel-v1:
+      title: SmsRequestModel
+      x-stoplight:
+        id: 8fa5015a79b7a
+      type: object
+      properties:
+        sid:
+          type: string
+        from:
+          $ref: '#/components/schemas/SenderRequestModel-v1'
+        to:
+          type: string
+        body:
+          type: string
+    SmsResponseModel-v1:
+      title: SmsResponseModel
+      x-stoplight:
+        id: 29689f5a07ab1
+      type: object
+      properties:
+        sid:
+          type: string
+        from:
+          $ref: '#/components/schemas/SenderResponseModel-v1'
+        to:
+          type: string
+        body:
+          type: string
+        status:
+          type: string
+          enum:
+            - CANCELED
+            - CREATED
+            - ERROR
+            - READY
+            - SCHEDULED
+            - SENT
+        sentAt:
+          type: string
+          format: date-time
